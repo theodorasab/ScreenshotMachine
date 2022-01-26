@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+
+<body>
+
+    <label for="site">Choose a site:</label>
+    <select name="site" id="link">
+        <option value="1">iFunded</option>
+        <option value="2">Property Partner</option>
+        <option value="3">Property Moose</option>
+        <option value="4">Homegrown</option>
+        <option value="5">Realty Mogul</option>
+    </select>
+    <a href="javascript:void(0)" id="render-link">Render the Save to Drive button</a>
+    <div id="savetodrive-div"></div>
+    <img id="myimage" src="">
+
+    <script>
+        var sites = [
+            {
+                "id": "1",
+                "name": "iFunded",
+                "link": "https://ifunded.de/en/"
+            }, {
+                "id": "2",
+                "name": "Property Partner",
+                "link": "https://www.propertypartner.co"
+            }, {
+                "id": "3",
+                "name": "Property Moose",
+                "link": "https://propertymoose.co.uk"
+            }, {
+                "id": "4",
+                "name": "Homegrown",
+                "link": "https://www.homegrown.co.uk"
+            },
+            {
+                "id": "5",
+                "name": "Realty Mogul",
+                "link": "https://www.realtymogul.com"
+            }
+        ]
+        function buttonClicked() {
+            var num = document.getElementById("link").value
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var urlCreator = window.URL || window.webkitURL;
+                    var imageUrl = urlCreator.createObjectURL(this.response);
+                    document.getElementById('myimage').setAttribute('src', imageUrl);
+                    var link = document.createElement("a");
+                    gapi.savetodrive.render('savetodrive-div', {
+                        src: imageUrl,
+                        filename: sites[num - 1].id + "_" + sites[num - 1].name,
+                        sitename: sites[num - 1].link
+                    });
+
+                   
+
+                }
+
+            };
+            xhttp.open("GET", "https://api.screenshotmachine.com/?key=e5f027&url=" + sites[num - 1].link + "&dimension=1920x1080", true);
+            xhttp.responseType = "blob";
+            xhttp.send();
+        }
+
+        document.getElementById('render-link').addEventListener('click', buttonClicked);
+
+    </script>
+</body>
+
+</html>
