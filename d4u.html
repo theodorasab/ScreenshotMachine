@@ -7,7 +7,7 @@
 </head>
 
 <body>
-
+    <!--select element to select one of the sites to take screenshot from -->
     <label for="site">Choose a site:</label>
     <select name="site" id="link">
         <option value="1">iFunded</option>
@@ -16,11 +16,13 @@
         <option value="4">Homegrown</option>
         <option value="5">Realty Mogul</option>
     </select>
+    <!--elements to render the google drive button -->
     <a href="javascript:void(0)" id="render-link">Render the Save to Drive button</a>
     <div id="savetodrive-div"></div>
     <img id="myimage" src="">
 
     <script>
+        //vector of objects for the sites
         var sites = [
             {
                 "id": "1",
@@ -45,31 +47,23 @@
                 "link": "https://www.realtymogul.com"
             }
         ]
+
         function buttonClicked() {
+            //get the value from selection
             var num = document.getElementById("link").value
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var urlCreator = window.URL || window.webkitURL;
-                    var imageUrl = urlCreator.createObjectURL(this.response);
-                    document.getElementById('myimage').setAttribute('src', imageUrl);
-                    var link = document.createElement("a");
-                    gapi.savetodrive.render('savetodrive-div', {
-                        src: imageUrl,
-                        filename: sites[num - 1].id + "_" + sites[num - 1].name,
-                        sitename: sites[num - 1].link
-                    });
 
-                   
-
-                }
-
-            };
-            xhttp.open("GET", "https://api.screenshotmachine.com/?key=e5f027&url=" + sites[num - 1].link + "&dimension=1920x1080", true);
-            xhttp.responseType = "blob";
-            xhttp.send();
+            console.log("https://api.screenshotmachine.com/?key=e5f027&url=" + sites[num - 1].link + "&dimension=1920x1080");
+            //google api to save to drive. Src is the link of screenshotmachine api. Google is making the http request and the create the blob
+            //we will need xampp to put it an a server and get the link of the blob right
+            //name of the file is "id_name". site name is the link of the site we are taking the screenshot from
+            gapi.savetodrive.render('savetodrive-div', {
+                src: "https://api.screenshotmachine.com/?key=e5f027&url=" + sites[num - 1].link + "&dimension=1920x1080",
+                filename: sites[num - 1].id + "_" + sites[num - 1].name,
+                sitename: sites[num - 1].link
+            });
         }
-
+        
+        //onclick event listener to save to google drive
         document.getElementById('render-link').addEventListener('click', buttonClicked);
 
     </script>
